@@ -9,7 +9,7 @@
 
 int main()
 {
-    printf("hellllo");
+    printf("helllloooooo");
     system("");
     startgame();
     return 0;
