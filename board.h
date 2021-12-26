@@ -4,7 +4,7 @@
 
 //Data structures
 int n;
-char undo[60][2], index_undo=0;
+char undo[60][3] = {{0}}, undo_index = 0;
 char horizontal[10][10] = {{0}}, vertical[10][10]={{0}},boxes[10][10]={{0}}; // 10 doestn't matter here but we will deal with only a part of it
 char Aturn = 1;
 int numEdges = 0;
@@ -22,54 +22,62 @@ void printBoard(); // And Scores
 char checkEnded();
 void changeturn();
 void startgame();
+void debugundo();
+int checkBoxes(int i, int j, char isvertical, char isforward);
 
 
-
-int checkBoxes(int i, int j, char isvertical)
+void undofunc()
 {
-    undo[index_undo][0] = i;
-    undo[index_undo][1] = j;
-    index_undo++;
+    //debugundo();
+    if (!undo_index)
+        return;
+    if (undo[undo_index - 1][2])
+        vertical[undo[undo_index - 1][0]][undo[undo_index - 1][1]] = 0;
+    else
+        horizontal[undo[undo_index - 1][0]][undo[undo_index - 1][1]] = 0;
+    undo_index--;
+    checkBoxes(undo[undo_index][0], undo[undo_index][1], undo[undo_index][2], 0);
+}
+
+// Undo -> isforward = 2
+// Move -> isforward = 1
+int checkBoxes(int i, int j, char isvertical, char isforward)
+{
+    if (isforward)
+    {
+        undo[undo_index][0] = i;
+        undo[undo_index][1] = j;
+        undo[undo_index][2] = isvertical;
+        undo_index++;
+    }
+
     int ret = 0;
     if (isvertical)
     {
         if (j - 1 >= 0 && vertical[i][j - 1] && horizontal[i][j - 1] && horizontal[i + 1][j - 1]){
             ret += 1;
-            if(Aturn)
-                boxes[i][j-1] = 1;
-            else
-                boxes[i][j-1] = 2;
+            increamentBoxes(i, j - 1, isforward);
+            printf("%d", undo[undo_index][1]);
         }
         if ( j + 1 < n+1 && vertical[i][j + 1] && horizontal[i][j] && horizontal[i + 1][j]){
             ret += 1;
-            if(Aturn)
-                boxes[i][j] = 1;
-            else
-                boxes[i][j] = 2;
+            increamentBoxes(i, j, isforward);
         }
-
     }
     else
     {
         if (i - 1 >= 0 && vertical[i - 1][j] && vertical[i - 1][j + 1] && horizontal[i - 1][j]){
             ret += 1;
-            if(Aturn)
-                boxes[i-1][j] = 1;
-            else
-                boxes[i-1][j] = 2;
+            increamentBoxes(i - 1, j, isforward);
         }
         if (i + 1 < n + 1 && vertical[i][j] && vertical[i][j + 1] && horizontal[i + 1][j]){
             ret += 1;
-            if(Aturn)
-                boxes[i][j] = 1;
-            else
-                boxes[i][j] = 2;
+            increamentBoxes(i, j, isforward);
         }
-
-
     }
     if (!ret)
         changeturn();
+    increament(ret, isforward);
     return ret;
 }
 
@@ -159,7 +167,8 @@ int modifyHorizontal(int i, int j)
         horizontal[i][j] = 1;
     else
         horizontal[i][j] = 2;
-    increament(checkBoxes(i, j, 0));
+    //increament(checkBoxes(i, j, 0, 1));
+    checkBoxes(i, j, 0, 1);
     numEdges++;
     return 1;
 }
@@ -173,7 +182,8 @@ int modifyVertical(int i, int j)
         vertical[i][j] = 1;
     else
         vertical[i][j] = 2;
-    increament(checkBoxes(i, j, 1));
+    //increament(checkBoxes(i, j, 1,1));
+    checkBoxes(i, j, 1, 1);
     numEdges++;
     return 1;
 }
@@ -184,6 +194,11 @@ int modifyVertical(int i, int j)
 // 2 -> 2pts horizontal
 char checkvalid(int p1x, int p1y, int p2x, int p2y)
 {
+    if (p1x == p1y == p2x == p2y)
+    {
+        undofunc();
+        return 1;
+    }
     if (  !(checkinterval(p1x, 0, n) && checkinterval(p2x, 0,n) && checkinterval(p1y, 0, n) && checkinterval(p2y, 0, n))  )
         return 0;
 
