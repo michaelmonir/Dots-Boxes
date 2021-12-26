@@ -8,8 +8,8 @@
 #define RESET   "\x1b[0m"
 
 int main()
-{
-    printf("helllloooooo");
+{    
+    printf("michael/dots-Boxes");
     system("");
     startgame();
     return 0;
