@@ -9,6 +9,7 @@
 
 int main()
 {
+    printf("hellllo");
     system("");
     startgame();
     return 0;
