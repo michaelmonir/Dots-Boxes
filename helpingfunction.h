@@ -1,5 +1,5 @@
-#ifndef HELPINGFUNCTION_H_INCLUDED
-#define HELPINGFUNCTION_H_INCLUDED
+#ifndef HELPINGFUNCTIONS_H_INCLUDED
+#define HELPINGFUNCTIONS_H_INCLUDED
 
 
 int checkinterval(int x, int start, int end)
@@ -22,11 +22,28 @@ int max(int first, int second)
     return second;
 }
 
-int increament(int i)
+int increament(int i, int isforward)
 {
+    if (!isforward)
+        i *= -1;
     if (Aturn)
         Ascore += i;
     else
         Bscore += i;
 }
-#endif // HELPINGFUNCTION_H_INCLUDED
+
+int increamentBoxes(int i, int j, int isforward)
+{
+    if (isforward)
+    {
+        if (Aturn)
+            boxes[i][j] = 1;
+        else
+            boxes[i][j] = 2;
+    }
+    else
+        boxes[i][j] = 0;
+
+}
+
+#endif // HELPINGFUNCTIONS_H_INCLUDED
