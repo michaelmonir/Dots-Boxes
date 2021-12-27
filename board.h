@@ -4,7 +4,7 @@
 
 //Data structures
 int n;
-char undo[60][3] = {{0}}, undo_index = 0,redo_counter=0;
+char undo[60][3] = {{0}}, undo_index = 0 ,redo_counter=0;
 char horizontal[10][10] = {{0}}, vertical[10][10]={{0}},boxes[10][10]={{0}}; // 10 doestn't matter here but we will deal with only a part of it
 char Aturn = 1;
 int numEdges = 0;
