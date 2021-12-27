@@ -2,9 +2,10 @@
 #define BOARD_H_INCLUDED
 
 
+
 //Data structures
 int n;
-char undo[60][3] = {{0}}, undo_index = 0;
+char undo[60][3] = {{0}}, undo_index = 0,redo_counter=0;
 char horizontal[10][10] = {{0}}, vertical[10][10]={{0}},boxes[10][10]={{0}}; // 10 doestn't matter here but we will deal with only a part of it
 char Aturn = 1;
 int numEdges = 0;
@@ -24,7 +25,7 @@ void changeturn();
 void startgame();
 void debugundo();
 int checkBoxes(int i, int j, char isvertical, char isforward);
-
+void redofunc();
 
 void undofunc()
 {
@@ -37,7 +38,31 @@ void undofunc()
         horizontal[undo[undo_index - 1][0]][undo[undo_index - 1][1]] = 0;
     undo_index--;
     checkBoxes(undo[undo_index][0], undo[undo_index][1], undo[undo_index][2], 0);
+    redo_counter++;
 }
+
+void redofunc(){
+    if(redo_counter>0){
+
+        int i;
+        if(Aturn)
+            i=1;
+        else
+            i=2;
+        checkBoxes(undo[undo_index][0], undo[undo_index][1], undo[undo_index][2], 1);
+        if (!undo_index)
+            return;
+        if (undo[undo_index - 1][2])
+            vertical[undo[undo_index - 1][0]][undo[undo_index - 1][1]] = i;
+        else
+            horizontal[undo[undo_index - 1][0]][undo[undo_index - 1][1]] = i;
+
+        redo_counter--;
+    }
+}
+
+
+
 
 // Undo -> isforward = 2
 // Move -> isforward = 1
@@ -154,7 +179,11 @@ void printBoard()
 
     }
     printf(RED"Score A: %d\t" BLUE"Score B: %d\n"RESET, Ascore, Bscore);
-    printf("%d\n\n",boxes[0][0]);
+    printf("%d %d %d\n",undo[0][0],undo[0][1],undo[0][2]);
+    printf("%d %d %d\n",undo[1][0],undo[1][1],undo[1][2]);
+    printf("%d %d %d\n",undo[2][0],undo[2][1],undo[2][2]);
+    printf("%d %d %d\n",undo[3][0],undo[3][1],undo[3][2]);
+    printf("%d %d \n",undo_index,redo_counter);
 }
 
 // When a user enters a Horizontal edge, This function modifies the horizontal Array
@@ -168,6 +197,7 @@ int modifyHorizontal(int i, int j)
     else
         horizontal[i][j] = 2;
     //increament(checkBoxes(i, j, 0, 1));
+    redo_counter=0;
     checkBoxes(i, j, 0, 1);
     numEdges++;
     return 1;
@@ -183,6 +213,7 @@ int modifyVertical(int i, int j)
     else
         vertical[i][j] = 2;
     //increament(checkBoxes(i, j, 1,1));
+    redo_counter = 0;
     checkBoxes(i, j, 1, 1);
     numEdges++;
     return 1;
@@ -194,11 +225,16 @@ int modifyVertical(int i, int j)
 // 2 -> 2pts horizontal
 char checkvalid(int p1x, int p1y, int p2x, int p2y)
 {
-    if (p1x == p1y == p2x == p2y)
+    if (p1x==0&&p1y==0&&p2x==0&&p2y==0)
     {
         undofunc();
         return 1;
     }
+    else if (p1x==1&&p1y==1&&p2x==1&&p2y==1){
+        redofunc();
+        return 1;
+    }
+
     if (  !(checkinterval(p1x, 0, n) && checkinterval(p2x, 0,n) && checkinterval(p1y, 0, n) && checkinterval(p2y, 0, n))  )
         return 0;
 
@@ -273,6 +309,5 @@ void startgame()
     else
         printf("\nDraw");
 }
-
 
 #endif // BOARD_H_INCLUDED
