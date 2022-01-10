@@ -623,6 +623,7 @@ void mainMenu()
     system("cls");
     timenull = time(NULL);
     reset();
+    printf(RED"Dots"RESET"&"BLUE"Boxes\n"RESET);
     printf(BROWN"For play press 1\nFor load game press 2\nFor top player press 3\nFor exit press 4\n "RESET);
     char choose;
     while (!getUserInput(&choose, NULL, NULL, NULL, 1) || (choose != 1 && choose != 2 && choose!=3 && choose !=4))
