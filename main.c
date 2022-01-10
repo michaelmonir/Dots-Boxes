@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "board.h"
-#include "helpingfunction.h"
+#include <math.h>
+#include <time.h>
 
-#define RED     "\x1b[31m"
-#define BLUE    "\x1b[34m"
-#define RESET   "\x1b[0m"
+#include "board.h"
 
 int main()
-{    
-    printf("michael/dots-Boxes");
+{
+    srand(time(NULL) * 951951);
     system("");
-    startgame();
+    mainMenu();
     return 0;
 }
