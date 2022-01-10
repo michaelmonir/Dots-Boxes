@@ -1,3 +1,4 @@
+
 #include "board.h"
 
 int n;
@@ -685,5 +686,3 @@ void mainMenu()
     else
         exit(0);
 }
-
-
